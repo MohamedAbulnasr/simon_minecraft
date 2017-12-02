@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html dir="ltr">
+	<head>
+		<title>Simon game of Minecraft</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="description" content="Simon game of Minecraft for free code camp">
+		<meta name="author" content="Mohamed Abulnasr">
+		<meta name="copyright" content="Objective Systems,Mohamed Abulnasr">
+		<meta name="subject" content="Copy rights reserved for Mohamed Abulnasr. Before reuse this code email me on objectiveerp@gmail.com">
+		<meta name="keywords" content="Simon,game,Minecraft,Egypt,free code camp,Mohamed,Abulnasr">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Orbitron|Satisfy|Permanent+Marker|Righteous|Saira|Pacifico|Akronim|Lateef|Aref+Ruqaa|Scheherazade|Katibeh|Sedgwick+Ave+Display">
+		<link rel="stylesheet" href="../css/bootstrap.min.css">
+		<script src="../js/jquery-latest.min.js"></script>
+		<link rel="stylesheet" href="../css/animate1.css">
+		<script src="../js/wow.min.js"></script>
+		<style type="text/css">
+			body,html{
+				background-color: wheat;
+			}
+			.hd{
+				font-family: Pacifico;
+				font-size: 2em;
+				color: darkcyan;
+				text-align: center;
+				padding-bottom: 2%;
+			}
+			.gm{
+				background-color: aquamarine;
+				text-align: center;
+
+			}
+			.bside{
+				max-width: 20%;
+				min-width: 5%;
+			}
+			.imag{
+				width: 40%;
+			}
+			.imag:hover{
+				background:radial-gradient(30% 40%, darkgoldenrod,goldenrod, transparent);
+			}
+			#tdUp{
+				padding-top: 0px;
+			}
+			#tdBottom{
+				padding-bottom: 0px;
+			}
+			#d1{
+				transform:rotateZ(135deg);
+			}
+			#d2{
+				transform:rotateZ(225deg);
+			}
+			#d3{
+				transform: rotate(45deg);
+			}
+			#d4{
+				transform: rotate(315deg);
+			}
+			#lever{
+				max-width: 30%;
+			}
+			table tr td,table tr{
+				padding:0;
+				margin:0; 
+			}
+			table{
+				background-image: url("../images/simon/b.png");
+				background-position: center;
+				background-size: contain;
+			}
+			#lvTitle{
+				border:1px solid bisque;
+				border-radius: 10px;
+				background-image: radial-gradient(white,lightgreen,bisque,bisque,lightgreen,bisque,bisque);
+				color: darkgreen;
+				font-family: Orbitron;
+				font-size: 2em;
+				font-weight:bold;
+			}
+			.win{
+				display: none;
+				position: fixed;
+				margin: 0;
+				padding: 0;
+				top:0;
+				left:0;
+				max-width: 200px;
+				text-align: center;
+				align-content: center;
+			}
+		</style>
+	</head>
+	<body>
+	<audio id="aud" src="" type="audio/mpeg">
+	</audio>
+	<audio id="winaud" src="../images/simon/wsound.m4a" type="audio/mpeg">
+	</audio>
+	<div id="hh" data-wow-iteration="3s" data-wow-duration="2.5s" data-wow-delay="2.5s" class="hd wow">
+		Simon of Mine craft .. Enjoy your mind..!<br/>
+	</div>
+	<div>
+		<img data-wow-iteration="3s" data-wow-duration="2.5s" data-wow-delay="2.5s" class="win wow" src="../images/simon/win.png">
+	</div>
+	<div class="">
+		<table align="center">
+		<tr align="center">
+			<td class="bside"></td>
+			<td id="tdUp" align="center" width="80%">
+				<img id="d1" class="imag" src="" alt="Boo">
+				&nbsp;&nbsp;
+				<img id="d2" class="imag" src="" alt="Boo">
+			</td>
+			<td class="bside"></td>
+		</tr>
+		<tr align="center">
+			<td class="bside"></td>
+			<td align="center">
+				<span id="lvTitle">&nbsp;Level: <span id="lv">1</span>&nbsp;</span>
+				<img id="lever" src="../images/simon/lever0.gif" alt="Up sticky">
+			</td>
+			<td class="bside"></td>
+		</tr>
+		<tr align="center">
+			<td class="bside"></td>
+			<td id="tdBottom" align="center" width="80%">
+				<img id="d3" class="imag" src="" alt="Boo">
+				&nbsp;&nbsp;
+				<img id="d4" class="imag" src="" alt="Boo">
+			</td>
+			<td class="bside"></td>
+		</tr>
+		</table>
+	</div>
+
+		<script type="text/javascript">
+	  		new WOW().init();
+			var pGif="../images/simon/d.gif";
+			var pPng="../images/simon/s.png";
+			var isOn=false;
+			var lvl=0;
+			var seq=[];
+			var countClicks=-1;
+
+			$(document).ready(function() {
+				$(".imag").prop("src",pPng);
+				$("#lever").on('click dblclick',function(e){
+					isOn= !isOn;
+					if (isOn)
+						restartGm();
+					else {
+						$("#lever").prop("src","../images/simon/lever0.gif");
+						lvl=0;
+					}
+				});
+				$(".imag").on('click dblclick',function(e) {
+					event.preventDefault();
+					if (isOn)
+						userAction($(this).prop('id') ,e);
+				});
+			});
+
+			function iAsk(isGo){
+				if(isGo==1){
+					if(lvl>=2) {
+						finalWin();
+						return;
+					}
+					lvl++;
+					$("#lv").html(lvl);
+				}
+				var i=-1;
+				seq=[];
+				var intr =setInterval(function(){
+					i++;
+					if(i>=lvl){
+						clearInterval(intr);
+						return;
+					}
+					setTimeout(function(){
+						$(".imag").prop("src",pPng);
+					},10);
+					setTimeout(function(){
+						seq[i]=(Math.ceil(Math.random()*4)).toString();
+						$("#d"+seq[i]).prop("src",pGif);
+						var d =document.getElementById('aud');
+						d.src='https://s3.amazonaws.com/freecodecamp/simonSound'+seq[i]+'.mp3';
+						d.play();
+					},100);
+					setTimeout(function(){
+						$("#d"+seq[i]).prop("src",pPng);
+					},800);
+				},900);
+			}
+
+			function iAskOld(isGo){
+/*					if(isGo==1){
+						lvl++;
+					}
+					for(var i=1;i<=lvl;i++){
+						setTimeout(function(){
+							$(".imag").prop("src",pPng);
+						},50);
+						setTimeout(function(){
+							seq[i-1]=(Math.ceil(Math.random()*4)).toString();
+							$("#hh").after('<br>'+i + ' : rand= '+(Math.ceil(Math.random()*4)).toString()+' > '+seq[i-1]);
+							$("#d"+seq[i-1]).prop("src",pGif);
+							var d =document.getElementById('aud');
+							d.src='https://s3.amazonaws.com/freecodecamp/simonSound'+seq[i-1]+'.mp3';
+							d.play();					
+						},50);
+						setTimeout(function(){
+							$("#d"+seq[i-1]).prop("src",pPng);
+						},750);
+
+					}
+					
+					for (let i = 0; i < 500;) {
+						i+=10;
+						setTimeout(function () {
+							$("#hh").after('<br> ## '+i + ' @@ ');
+						}, i* 500);
+					}
+					
+*/
+			}
+
+			function userAction(id, e){
+				countClicks++;
+				id=id.replace('d','');
+
+				if(seq[countClicks] != id){
+					var d =document.getElementById('aud');
+					d.src='../images/simon/fail.mp3';
+					d.play();
+					countClicks=-1;
+					$("#lvTitle").css({'background-image':'-webkit-radial-gradient(white,#ffaa99,bisque,bisque,#ffaa99,bisque,bisque)'});
+					setTimeout(function(){
+						$("#lvTitle").css({'background-image':'-webkit-radial-gradient(white,lightgreen,bisque,bisque,lightgreen,bisque,bisque)'});
+						iAsk(0);
+					},900);
+					return;
+				} else {
+					setTimeout(function(){
+						$("#d"+id).prop("src",pGif);
+						var d =document.getElementById('aud');
+						d.src='https://s3.amazonaws.com/freecodecamp/simonSound'+id+'.mp3';
+						d.play();
+					},50);				
+					setTimeout(function(){
+						$(".imag").prop("src",pPng);
+					},700);
+				}
+
+				if(seq.length==countClicks+1){
+					countClicks=-1;
+					setTimeout(function(){
+						iAsk(1);
+					},800);
+					return;
+				}
+			}
+
+			function restartGm(){
+				$("#lever").prop("src","../images/simon/lever.png");
+				countClicks=-1;
+				lvl=0;
+				iAsk(1);
+			}
+
+			function finalWin(){
+				$("#lever").prop("src","../images/simon/lever0.gif");
+				isOn= !isOn;
+				countClicks=-1;
+				lvl=0;
+				$("#lv").html('1');
+				var d =document.getElementById('winaud');
+				d.play();
+				$(".win").css({
+					display: 'block',
+					top: (parseInt($(window).height())-parseInt($("img.win").height()))/2,
+					left: (parseInt($(window).width())-parseInt($("img.win").width()))/2,
+					zIndex:'9999',
+					opacity: 1,
+					width: '20px'
+				});
+				$(".win").animate({
+					width: "400px",
+					opacity: "0.5"
+				}, 4000);
+				$("#hh").addClass("flipInX");
+				$(".win").addClass("flipInX");
+				setTimeout(function(){
+					$(".win").css({
+						display: 'none',
+						top: 0,
+						left: 0
+					});
+				},16200);
+		}
+		</script>
+	</body>
+</html>
